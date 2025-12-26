@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  nextjs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    # Mount local .env.local to the container for development, if needed.
+    # In production, consider passing environment variables directly or using Docker secrets.
+    # env_file:
+    #   - .env.local
+    environment:
+      # Example: Pass specific environment variables
+      # NODE_ENV: production
+      # NEXT_PUBLIC_API_URL: http://localhost:3000/api
+      # Add any other environment variables your Next.js app needs
+      # For production, ensure sensitive variables are handled securely (e.g., Docker secrets or environment variables directly set during deployment).
+      # See .env.example for typical environment variables.
+      # You can uncomment `env_file: - .env.local` above if you want to use a local .env.local file
+      # for local development with docker-compose.
+      # Remember to add .env.local to your .dockerignore to prevent it from being copied into the image.
+      NEXT_PUBLIC_APP_ENV: docker-compose
+    volumes:
+      # Optional: Mount your source code for live-reloading during development.
+      # This is usually not needed for production builds, as the app is built into the image.
+      # Uncomment for development purposes:
+      # - .:/app
+      # - /app/node_modules # Prevent host node_modules from overriding container's
+    restart: unless-stopped
