@@ -13,6 +13,8 @@ Before you begin, ensure the target "Server" or "Host" computer has the followin
     *   **Action**: Run the installer and restart your computer if asked.
     *   **Verify**: Open Docker Desktop and ensure the engine is running (bottom left corner should be green).
 
+    *Note: You do NOT need to install PostgreSQL manually. Docker will download and run it for you.*
+
 2.  **Git for Windows**:
     *   Download and install from: [https://git-scm.com/download/win](https://git-scm.com/download/win)
     *   **Action**: Run the installer with default settings.
@@ -64,7 +66,8 @@ The app needs secrets (like database passwords) to run. These are not stored in 
         ```powershell
         notepad .env.local
         ```
-    *   **Critical**: Update `DB_HOST`, `DB_PASSWORD`, `JWT_SECRET`, etc., with your actual production values.
+    *   **Critical**: Update `DB_PASSWORD`, `JWT_SECRET`, etc., with your actual production values.
+    *   **VERY IMPORTANT**: Set `DB_HOST=postgres` (instead of `localhost`). This tells the app to talk to the database container.
     *   *Save and close Notepad.*
 
     > **Important**: Since we are running in Docker, you might strictly rely on `docker-compose.yml` environment variables, but having a `.env.local` is good practice if you mapped it in the compose file.

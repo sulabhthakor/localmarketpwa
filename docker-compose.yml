@@ -22,10 +22,27 @@ services:
       # for local development with docker-compose.
       # Remember to add .env.local to your .dockerignore to prevent it from being copied into the image.
       NEXT_PUBLIC_APP_ENV: docker-compose
-    # volumes:
+      # volumes:
       # Optional: Mount your source code for live-reloading during development.
       # This is usually not needed for production builds, as the app is built into the image.
       # Uncomment for development purposes:
       # - .:/app
       # - /app/node_modules # Prevent host node_modules from overriding container's
     restart: unless-stopped
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-your_db_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-your_db_password}
+      POSTGRES_DB: ${DB_NAME:-localmarket_db}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
