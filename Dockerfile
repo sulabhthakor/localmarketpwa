@@ -7,7 +7,8 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
+# Install dependencies based on the preferred package manager
+COPY code/package.json code/yarn.lock* code/package-lock.json* code/pnpm-lock.yaml* ./
 RUN npm install -g pnpm && pnpm i --frozen-lockfile
 
 
@@ -15,7 +16,7 @@ RUN npm install -g pnpm && pnpm i --frozen-lockfile
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY code/ .
 RUN npm install -g pnpm
 
 # Next.js collects completely anonymous telemetry data about general usage.

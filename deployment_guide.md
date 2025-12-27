@@ -44,7 +44,7 @@ We need to download the project code from GitHub to your new machine.
 4.  **Enter the Project Directory**:
     *   Navigate into the code folder where the Docker files are located:
         ```powershell
-        cd localmarketpwa/code
+        cd localmarketpwa
         ```
 
 ---
@@ -76,7 +76,7 @@ The app needs secrets (like database passwords) to run. These are not stored in 
 Now we use Docker to build and run the app.
 
 1.  **Run the Docker Command**:
-    *   In the `C:\Projects\localmarketpwa\code` directory (where you are now), run:
+    *   In the `C:\Projects\localmarketpwa` directory (where you are now), run:
         ```powershell
         docker-compose up -d --build
         ```
@@ -103,7 +103,7 @@ When you push new code to GitHub from your developer machine, follow these steps
 
 1.  **Open PowerShell** and go to the folder:
     ```powershell
-    cd C:\Projects\localmarketpwa\code
+    cd C:\Projects\localmarketpwa
     ```
 
 2.  **Download Updates**:
@@ -123,13 +123,13 @@ When you push new code to GitHub from your developer machine, follow these steps
 
 **Install/Start:**
 ```powershell
-cd C:\Projects\localmarketpwa\code
+cd C:\Projects\localmarketpwa
 docker-compose up -d --build
 ```
 
 **Update:**
 ```powershell
-cd C:\Projects\localmarketpwa\code
+cd C:\Projects\localmarketpwa
 git pull origin main
 docker-compose up -d --build
 ```
