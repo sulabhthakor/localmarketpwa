@@ -163,7 +163,7 @@ export default function Home() {
               </h2>
               <div className="h-1.5 w-24 bg-primary rounded-full mt-3 opacity-90" />
             </div>
-            <Button variant="outline" className="w-full md:w-auto rounded-full border-2 border-border/60 hover:border-primary hover:bg-primary hover:text-primary-foreground font-bold px-6 transition-all duration-300" asChild>
+            <Button variant="outline" className="hidden md:inline-flex rounded-full border-2 border-border/60 hover:border-primary hover:bg-primary hover:text-primary-foreground font-bold px-6 transition-all duration-300" asChild>
               <Link href="/products" className="flex items-center justify-center">
                 View All <ArrowRight className="ml-2 w-4 h-4" />
               </Link>
@@ -193,6 +193,14 @@ export default function Home() {
               ))}
             </div>
           )}
+
+          <div className="mt-8 text-center md:hidden">
+            <Button variant="outline" className="w-full rounded-full border-2 border-border/60 hover:border-primary hover:bg-primary hover:text-primary-foreground font-bold px-6 transition-all duration-300" asChild>
+              <Link href="/products" className="flex items-center justify-center">
+                View All Categories <ArrowRight className="ml-2 w-4 h-4" />
+              </Link>
+            </Button>
+          </div>
         </div>
       </section>
 
@@ -251,7 +259,7 @@ export default function Home() {
               </div>
             </div>
 
-            <Button variant="outline" className="w-full md:w-auto rounded-full border-2 border-border/60 hover:border-primary hover:bg-primary hover:text-primary-foreground font-bold px-6 transition-all duration-300" asChild>
+            <Button variant="outline" className="hidden md:inline-flex rounded-full border-2 border-border/60 hover:border-primary hover:bg-primary hover:text-primary-foreground font-bold px-6 transition-all duration-300" asChild>
               <Link href="/products">Explore All</Link>
             </Button>
           </div>

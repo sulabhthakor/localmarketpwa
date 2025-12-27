@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, ShoppingCart, User, Store, ShoppingBag, Briefcase } from "lucide-react";
+import { Search, ShoppingCart, User, Store, ShoppingBag, Briefcase, LayoutDashboard, ShieldCheck } from "lucide-react";
 import { MobileNav } from "./mobile-nav";
 import { LanguageSwitcher } from "./language-switcher";
 
@@ -35,7 +35,7 @@ function UserMenu() {
 
     if (!user) {
         return (
-            <Button variant="ghost" size="icon" asChild className="hover:bg-secondary/80 rounded-full">
+            <Button variant="ghost" size="icon" asChild className="rounded-full">
                 <Link href="/login">
                     <User className="h-5 w-5" />
                     <span className="sr-only">Account</span>
@@ -56,7 +56,7 @@ function UserMenu() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Button variant="ghost" className="relative h-8 w-8 rounded-full" suppressHydrationWarning>
                     <Avatar className="h-8 w-8">
                         <AvatarImage src={user.image} alt={user.name} />
                         <AvatarFallback>{initials}</AvatarFallback>
@@ -85,6 +85,22 @@ function UserMenu() {
                         Edit Profile
                     </Link>
                 </DropdownMenuItem>
+                {(user.role === 'admin' || user.role === 'super_admin') && (
+                    <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
+                        <Link href="/admin">
+                            <ShieldCheck className="mr-2 h-4 w-4" />
+                            Admin Dashboard
+                        </Link>
+                    </DropdownMenuItem>
+                )}
+                {user.role === 'business_owner' && (
+                    <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
+                        <Link href="/business">
+                            <LayoutDashboard className="mr-2 h-4 w-4" />
+                            Seller Dashboard
+                        </Link>
+                    </DropdownMenuItem>
+                )}
                 {user.role === 'business_owner' && (
                     <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
                         <Link href="/business/settings">
@@ -194,9 +210,9 @@ export function Navbar() {
 
                     <div className="h-6 w-px bg-border/60 mx-1 hidden sm:block" />
 
-                    <Button variant="ghost" size="icon" asChild className="relative hover:bg-secondary/80 rounded-full h-10 w-10 transition-colors">
+                    <Button variant="ghost" size="icon" asChild className="relative rounded-full h-10 w-10 transition-colors">
                         <Link href="/cart">
-                            <ShoppingCart className="h-5 w-5 text-gray-700 dark:text-gray-200" />
+                            <ShoppingCart className="h-5 w-5" />
                             <span className="sr-only">Cart</span>
                             <CountBadge />
                         </Link>

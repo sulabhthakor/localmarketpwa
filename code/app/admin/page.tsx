@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, ShoppingBag, DollarSign, Settings, ShieldCheck } from "lucide-react";
@@ -35,6 +36,19 @@ export default function AdminDashboard() {
                         <p className="text-xs text-muted-foreground">+20.1% from last month</p>
                     </CardContent>
                 </Card>
+                <Link href="/admin/users">
+                    <Card className="hover:bg-accent/5 transition-colors cursor-pointer border-primary/20 bg-primary/5">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">User Accounts</CardTitle>
+                            <Users className="h-4 w-4 text-primary" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">Manage</div>
+                            <p className="text-xs text-muted-foreground mt-1">Users, Roles, Passwords</p>
+                        </CardContent>
+                    </Card>
+                </Link>
+
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Active Sellers</CardTitle>
@@ -45,6 +59,19 @@ export default function AdminDashboard() {
                         <p className="text-xs text-muted-foreground">+2 since last week</p>
                     </CardContent>
                 </Card>
+
+                <Link href="/admin/users">
+                    <Card className="hover:bg-accent/5 transition-colors cursor-pointer border-primary/20 bg-primary/5">
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">User Accounts</CardTitle>
+                            <Users className="h-4 w-4 text-primary" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">Manage</div>
+                            <p className="text-xs text-muted-foreground mt-1">Users, Roles, Passwords</p>
+                        </CardContent>
+                    </Card>
+                </Link>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Products</CardTitle>

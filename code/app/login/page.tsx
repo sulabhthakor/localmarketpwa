@@ -87,7 +87,7 @@ export default function LoginPage() {
                             <Input id="password" name="password" type="password" required />
                         </div>
                     </CardContent>
-                    <CardFooter className="flex flex-col space-y-4">
+                    <CardFooter className="flex flex-col space-y-4 pt-4">
                         <Button type="submit" className="w-full" disabled={loading}>
                             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             Sign In

@@ -4,11 +4,15 @@ import { useEffect } from "react";
 
 export function PwaRegister() {
     useEffect(() => {
-        // @ts-ignore
-        if ("serviceWorker" in navigator && window.workbox !== undefined) {
-            // @ts-ignore
-            const wb = window.workbox;
-            wb.register();
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker
+                .register("/sw.js")
+                .then(() => {
+                    // Service Worker registered successfully
+                })
+                .catch(() => {
+                    // Service Worker registration failed
+                });
         }
     }, []);
 

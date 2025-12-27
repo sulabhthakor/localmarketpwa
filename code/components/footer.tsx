@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Store, Facebook, Twitter, Instagram, Mail, Phone, MapPin, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { InstallPwaButton } from "@/components/InstallPwaButton";
 
 export function Footer() {
     return (
@@ -27,6 +28,9 @@ export function Footer() {
                             <SocialButton icon={Facebook} />
                             <SocialButton icon={Twitter} />
                             <SocialButton icon={Instagram} />
+                        </div>
+                        <div className="pt-2">
+                            <InstallPwaButton />
                         </div>
                     </div>
 

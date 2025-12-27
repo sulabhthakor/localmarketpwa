@@ -1,7 +1,10 @@
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
-const withPWA = require("@ducanh2912/next-pwa").default({
+const pwaModule = require("@ducanh2912/next-pwa");
+const withPWA = pwaModule.default || pwaModule;
+
+const withPWAConfig = withPWA({
   dest: "public",
   disable: false,
   register: true,
@@ -47,4 +50,4 @@ const nextConfig = {
   },
 };
 
-export default withPWA(nextConfig);
+export default withPWAConfig(nextConfig);
