@@ -1,4 +1,8 @@
+
 FROM node:20-alpine AS base
+
+# Enable corepack for pnpm support
+RUN corepack enable
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -9,7 +13,7 @@ WORKDIR /app
 # Install dependencies based on the preferred package manager
 # Install dependencies based on the preferred package manager
 COPY code/package.json code/yarn.lock* code/package-lock.json* code/pnpm-lock.yaml* ./
-RUN npm install -g pnpm && pnpm i --frozen-lockfile
+RUN pnpm i --frozen-lockfile
 
 
 # Rebuild the source code only when needed
@@ -17,7 +21,8 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY code/ .
-RUN npm install -g pnpm
+# corepack is already enabled in base
+# npm install -g pnpm is not needed
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry

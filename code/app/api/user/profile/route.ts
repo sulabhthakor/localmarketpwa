@@ -20,8 +20,10 @@ export async function PATCH(req: Request) {
         }
 
         const formData = await req.formData();
+        const name = formData.get('name') as string;
         const phone = formData.get('phone') as string;
         const address = formData.get('address') as string;
+        const file = formData.get('image') as File | null; // Assuming input name is 'image'
 
         let imageUrl = null;
         if (file) {

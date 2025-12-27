@@ -2,7 +2,7 @@
 
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menu, Home, ShoppingBag, ShoppingCart, User, UserPlus, Briefcase, LogOut, Settings, LayoutDashboard } from "lucide-react";
+import { Menu, Home, ShoppingBag, ShoppingCart, User, UserPlus, Briefcase, LogOut, Settings, LayoutDashboard, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";

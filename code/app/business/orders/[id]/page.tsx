@@ -113,14 +113,14 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                         <div className="flex items-center gap-3">
                             <h1 className="text-3xl font-bold tracking-tight">Order #{order.id}</h1>
                             <Badge className={`uppercase text-[10px] tracking-wide px-2 py-0.5 ${order.status === 'completed' ? 'bg-green-500 hover:bg-green-600' :
-                                    order.status === 'pending' ? 'bg-yellow-500 hover:bg-yellow-600' :
-                                        'bg-slate-500'
+                                order.status === 'pending' ? 'bg-yellow-500 hover:bg-yellow-600' :
+                                    'bg-slate-500'
                                 }`}>
                                 {order.status}
                             </Badge>
                         </div>
                         <p className="text-muted-foreground mt-1">
-                            Placed on {new Intl.DateTimeFormat('en-IN', { datestyle: 'full', timeStyle: 'short' }).format(new Date(order.created_at))}
+                            Placed on {new Intl.DateTimeFormat('en-IN', { dateStyle: 'full', timeStyle: 'short' }).format(new Date(order.created_at))}
                         </p>
                     </div>
                 </div>
