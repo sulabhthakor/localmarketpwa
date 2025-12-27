@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import I18nProvider from "@/components/i18n-provider";
+import { PwaRegister } from "@/components/PwaRegister";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: "#2563eb",
+  themeColor: "#fe330a",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -45,6 +46,7 @@ export default function RootLayout({
           </main>
           <Footer />
         </I18nProvider>
+        <PwaRegister />
       </body>
     </html>
   );

@@ -1,21 +1,23 @@
-import type { NextConfig } from "next";
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 
 const withPWA = require("@ducanh2912/next-pwa").default({
   dest: "public",
+  disable: false,
+  register: true,
+  skipWaiting: true,
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
   swcMinify: true,
-  // Enable PWA in dev mode for testing (CAUTION: This may cause aggressive caching during development)
-  disable: false,
   workboxOptions: {
     disableDevLogs: true,
   },
 });
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   output: "standalone",
-  // @ts-ignore - Turbopack type might not be in the definition yet depending on version, generic ignore to be safe or just standard property
   turbopack: {},
   images: {
     dangerouslyAllowSVG: true,
@@ -42,9 +44,6 @@ const nextConfig: NextConfig = {
         hostname: "tse2.mm.bing.net",
       },
     ],
-  },
-  experimental: {
-    // serverActions: true, // simplified
   },
 };
 
