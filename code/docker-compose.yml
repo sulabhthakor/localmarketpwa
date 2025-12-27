@@ -22,7 +22,7 @@ services:
       # for local development with docker-compose.
       # Remember to add .env.local to your .dockerignore to prevent it from being copied into the image.
       NEXT_PUBLIC_APP_ENV: docker-compose
-    volumes:
+    # volumes:
       # Optional: Mount your source code for live-reloading during development.
       # This is usually not needed for production builds, as the app is built into the image.
       # Uncomment for development purposes:

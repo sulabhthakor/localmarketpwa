@@ -14,6 +14,7 @@ const withPWA = require("@ducanh2912/next-pwa").default({
 });
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   // @ts-ignore - Turbopack type might not be in the definition yet depending on version, generic ignore to be safe or just standard property
   turbopack: {},
   images: {
