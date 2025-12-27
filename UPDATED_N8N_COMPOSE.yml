@@ -1,0 +1,64 @@
+name: n8n-with-ngrok
+services:
+  init-permissions:
+    image: busybox:1.36
+    command:
+      - /bin/sh
+      - -c
+      - mkdir -p /data && chown -R 1000:1000 /data
+    volumes:
+      - ./data:/data
+    restart: "no"
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    depends_on:
+      init-permissions:
+        condition: service_completed_successfully
+    ports:
+      - "5678:5678"
+    environment:
+      TZ: "Asia/Kolkata"
+      GENERIC_TIMEZONE: "Asia/Kolkata"
+      N8N_PROTOCOL: "https"
+      # Host is still the main domain
+      N8N_HOST: "endless-wren-mentally.ngrok-free.app"
+      # Base URL includes the subdirectory
+      N8N_EDITOR_BASE_URL: "https://endless-wren-mentally.ngrok-free.app/n8n/"
+      WEBHOOK_URL: "https://endless-wren-mentally.ngrok-free.app/n8n/"
+      # Path tells n8n to serve from /n8n/
+      N8N_PATH: "/n8n/"
+      N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
+      N8N_RUNNERS_ENABLED: "true"
+      N8N_TRUST_PROXY: "172.16.0.0/12"
+    volumes:
+      - ./data:/home/node/.n8n
+    restart: unless-stopped
+    networks:
+      - shared_web
+      - default
+
+  # n8n-proxy is REMOVED because localmarket-nginx handles it now.
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: ngrok
+    depends_on:
+      - n8n
+    command:
+      - http
+      - --domain=endless-wren-mentally.ngrok-free.app
+      # Points to the Nginx container in the OTHER project
+      - http://localmarket-nginx:80
+    environment:
+      NGROK_AUTHTOKEN: 31HpaZfduXD0PdCgGGNPVfzA15I_2nXs6tAs1gjrwu5VyyoVQ
+    restart: unless-stopped
+    networks:
+      - shared_web
+      - default
+
+networks:
+  default:
+  shared_web:
+    external: true

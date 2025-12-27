@@ -15,6 +15,9 @@ services:
     restart: unless-stopped
     depends_on:
       - postgres
+    networks:
+      - default
+      - shared_web
 
   postgres:
     image: postgres:15-alpine
@@ -27,6 +30,29 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - default
+      - shared_web
+
+  nginx:
+    image: nginx:alpine
+    container_name: localmarket-nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      - nextjs-app
+    networks:
+      - default
+      - shared_web
+
+networks:
+  default:
+  shared_web:
+    external: true
+    name: shared_web
 
 volumes:
   postgres_data:
