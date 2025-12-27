@@ -3,7 +3,7 @@ import { verifyToken, hashPassword } from '@/lib/auth';
 import { query } from '@/lib/db';
 import { cookies } from 'next/headers';
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('jwt')?.value;
@@ -19,7 +19,7 @@ export async function POST(req: Request, { params }: { params: { id: string } })
 
         const body = await req.json();
         const { newPassword } = body;
-        const userId = params.id;
+        const { id: userId } = await params;
 
         if (!newPassword || newPassword.length < 6) {
             return NextResponse.json({ message: 'Password must be at least 6 characters' }, { status: 400 });

@@ -3,7 +3,7 @@ import { verifyToken } from '@/lib/auth';
 import { query } from '@/lib/db';
 import { cookies } from 'next/headers';
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('jwt')?.value;
@@ -19,7 +19,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
         const body = await req.json();
         const { name, email, role } = body;
-        const userId = params.id;
+        const { id: userId } = await params;
 
         // Validation
         if (!name || !email || !role) {
