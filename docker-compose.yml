@@ -42,6 +42,11 @@ services:
     ports:
       - "80:80"
     restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     depends_on:
       - nextjs-app
     networks:
@@ -61,7 +66,8 @@ services:
     ports:
       - "4040:4040"
     depends_on:
-      - nginx
+      nginx:
+        condition: service_healthy
     networks:
       - default
       - shared_web
@@ -74,3 +80,5 @@ networks:
 
 volumes:
   postgres_data:
+
+
