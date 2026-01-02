@@ -1,0 +1,7 @@
+tunnel: 4985a2e0-e5aa-47b2-b732-dae71dd1033b
+credentials-file: /etc/cloudflared/4985a2e0-e5aa-47b2-b732-dae71dd1033b.json
+
+ingress:
+  - hostname: lm.snapdecode.in
+    service: http://localmarket-nginx:80
+  - service: http_status:404

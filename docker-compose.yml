@@ -52,19 +52,12 @@ services:
     networks:
       - default
       - shared_web
-  ngrok:
-    image: ngrok/ngrok:latest
+  cloudflared:
+    image: cloudflare/cloudflared:latest
     restart: unless-stopped
-    # This command tells ngrok to use your specific domain and tunnel to the 'nginx' service on port 80
-    command:
-      - "http"
-      - "--domain=endless-wren-mentally.ngrok-free.app"
-      - "nginx:80"
-    environment:
-      # !!! YOU MUST PASTE YOUR TOKEN BELOW !!!
-      NGROK_AUTHTOKEN: "31HpaZfduXD0PdCgGGNPVfzA15I_2nXs6tAs1gjrwu5VyyoVQ"
-    ports:
-      - "4040:4040"
+    volumes:
+      - ./cloudflared:/etc/cloudflared
+    command: tunnel run
     depends_on:
       nginx:
         condition: service_healthy
