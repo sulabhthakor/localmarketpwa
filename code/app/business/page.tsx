@@ -96,139 +96,183 @@ export default async function BusinessDashboard() {
     const { business, productCount, orderCount, totalRevenue, recentOrders } = data;
 
     return (
-        <div className="container mx-auto py-10 px-4 md:px-8 space-y-10">
+        <div className="container mx-auto py-6 px-4 md:py-10 md:px-8 space-y-6 md:space-y-8">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b pb-8">
-                <div>
-                    <h1 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300">
+            <div className="flex flex-col gap-4 md:flex-row md:justify-between md:items-center border-b pb-6">
+                <div className="min-w-0">
+                    <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight truncate">
                         {business.name}
                     </h1>
-                    <div className="flex items-center text-muted-foreground mt-2">
-                        <Package className="mr-2 h-4 w-4" />
-                        <span>{business.address || 'No address set'}</span>
+                    <div className="flex items-center text-muted-foreground mt-1 text-sm">
+                        <Package className="mr-1.5 h-3.5 w-3.5 shrink-0" />
+                        <span className="truncate">{business.address || 'No address set'}</span>
                     </div>
                 </div>
-                <div className="flex gap-3">
-                    <Button asChild size="lg" className="shadow-sm hover:shadow-md transition-all">
+                <div className="flex gap-2 shrink-0">
+                    <Button asChild size="sm" className="flex-1 md:flex-none shadow-sm">
                         <Link href="/products/new">
-                            <Plus className="mr-2 h-5 w-5" /> Add Product
+                            <Plus className="mr-1.5 h-4 w-4" /> Add Product
                         </Link>
                     </Button>
-                    <Button variant="outline" size="lg" asChild className="hover:bg-secondary/50">
+                    <Button variant="outline" size="sm" asChild className="shrink-0">
                         <Link href="/business/settings">
-                            <Settings className="mr-2 h-5 w-5" /> Settings
+                            <Settings className="h-4 w-4" />
+                            <span className="hidden sm:inline ml-1.5">Settings</span>
                         </Link>
                     </Button>
                 </div>
             </div>
 
             {/* Stats Grid */}
-            <div className="grid gap-6 md:grid-cols-3">
-                <Link href="/business/revenue" className="block">
-                    <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-primary/80 h-full cursor-pointer group">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider group-hover:text-primary transition-colors">Total Revenue</CardTitle>
-                            <div className="p-2 bg-primary/10 rounded-full group-hover:bg-primary/20 transition-colors">
-                                <DollarSign className="h-4 w-4 text-primary" />
+            <div className="grid gap-3 md:gap-6 grid-cols-2 md:grid-cols-3">
+                <Link href="/business/revenue" className="block col-span-2 md:col-span-1">
+                    <Card className="hover:shadow-md transition-all duration-300 border-l-4 border-l-primary/80 h-full cursor-pointer group">
+                        <CardContent className="p-4 md:p-6">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider group-hover:text-primary transition-colors">Revenue</span>
+                                <div className="p-1.5 bg-primary/10 rounded-full group-hover:bg-primary/20 transition-colors">
+                                    <DollarSign className="h-3.5 w-3.5 text-primary" />
+                                </div>
                             </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{formatPrice(totalRevenue)}</div>
-                            <p className="text-xs text-muted-foreground mt-1">Lifetime earnings across all orders</p>
+                            <div className="text-2xl md:text-3xl font-bold">{formatPrice(totalRevenue)}</div>
+                            <p className="text-xs text-muted-foreground mt-1 hidden sm:block">Lifetime earnings</p>
                         </CardContent>
                     </Card>
                 </Link>
 
                 <Link href="/business/orders" className="block">
-                    <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-blue-500 h-full cursor-pointer group">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider group-hover:text-blue-600 transition-colors">Total Orders</CardTitle>
-                            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition-colors">
-                                <ShoppingBag className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    <Card className="hover:shadow-md transition-all duration-300 border-l-4 border-l-blue-500 h-full cursor-pointer group">
+                        <CardContent className="p-4 md:p-6">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider group-hover:text-blue-600 transition-colors">Orders</span>
+                                <div className="p-1.5 bg-blue-100 dark:bg-blue-900/30 rounded-full group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition-colors">
+                                    <ShoppingBag className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+                                </div>
                             </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{orderCount}</div>
-                            <p className="text-xs text-muted-foreground mt-1">Orders received and processed</p>
+                            <div className="text-2xl md:text-3xl font-bold">{orderCount}</div>
+                            <p className="text-xs text-muted-foreground mt-1 hidden sm:block">Total orders</p>
                         </CardContent>
                     </Card>
                 </Link>
 
                 <Link href="/business/products" className="block">
-                    <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-green-500 h-full cursor-pointer group">
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider group-hover:text-green-600 transition-colors">Products</CardTitle>
-                            <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-full group-hover:bg-green-200 dark:group-hover:bg-green-900/50 transition-colors">
-                                <Package className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    <Card className="hover:shadow-md transition-all duration-300 border-l-4 border-l-green-500 h-full cursor-pointer group">
+                        <CardContent className="p-4 md:p-6">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider group-hover:text-green-600 transition-colors">Products</span>
+                                <div className="p-1.5 bg-green-100 dark:bg-green-900/30 rounded-full group-hover:bg-green-200 dark:group-hover:bg-green-900/50 transition-colors">
+                                    <Package className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
+                                </div>
                             </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{productCount}</div>
-                            <p className="text-xs text-muted-foreground mt-1">Active products currently listed</p>
+                            <div className="text-2xl md:text-3xl font-bold">{productCount}</div>
+                            <p className="text-xs text-muted-foreground mt-1 hidden sm:block">Active listings</p>
                         </CardContent>
                     </Card>
                 </Link>
             </div>
 
             {/* Recent Orders Section */}
-            <div className="space-y-6">
+            <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold tracking-tight">Recent Orders</h2>
-                    <Button variant="ghost" size="sm" asChild className="text-primary hover:text-primary/80">
-                        <Link href="/business/orders">View All Orders &rarr;</Link>
+                    <h2 className="text-lg md:text-xl font-bold tracking-tight">Recent Orders</h2>
+                    <Button variant="ghost" size="sm" asChild className="text-primary hover:text-primary/80 text-xs h-8 px-2">
+                        <Link href="/business/orders">View All &rarr;</Link>
                     </Button>
                 </div>
 
-                <Card className="overflow-hidden border shadow-sm">
-                    <CardContent className="p-0">
-                        {recentOrders.length === 0 ? (
-                            <div className="flex flex-col items-center justify-center p-12 text-center text-muted-foreground">
-                                <ShoppingBag className="h-12 w-12 mb-4 opacity-20" />
-                                <p className="text-lg font-medium">No orders yet</p>
-                                <p className="text-sm">Your recent orders will appear here.</p>
-                            </div>
-                        ) : (
-                            <div className="w-full overflow-auto">
-                                <table className="w-full caption-bottom text-sm">
-                                    <thead className="bg-muted/30 [&_tr]:border-b">
-                                        <tr className="border-b transition-colors">
-                                            <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Order ID</th>
-                                            <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Customer</th>
-                                            <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Status</th>
-                                            <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Total</th>
-                                            <th className="h-12 px-6 text-right align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="[&_tr:last-child]:border-0 bg-card">
-                                        {recentOrders.map((order: any) => (
-                                            <tr key={order.id} className="border-b transition-colors hover:bg-muted/40 cursor-pointer">
-                                                <td className="p-6 align-middle font-medium text-primary">#{order.id}</td>
-                                                <td className="p-6 align-middle font-medium">{order.customer_name}</td>
-                                                <td className="p-6 align-middle">
-                                                    <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm ${order.status === 'completed' ? 'bg-green-100 text-green-700 border border-green-200' :
-                                                        order.status === 'pending' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
-                                                            'bg-gray-100 text-gray-700 border border-gray-200'
+                {recentOrders.length === 0 ? (
+                    <Card>
+                        <CardContent className="flex flex-col items-center justify-center p-8 md:p-12 text-center text-muted-foreground">
+                            <ShoppingBag className="h-10 w-10 mb-3 opacity-30" />
+                            <p className="font-medium">No orders yet</p>
+                            <p className="text-sm">Your recent orders will appear here.</p>
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <>
+                        {/* Mobile View: Cards */}
+                        <div className="md:hidden space-y-3">
+                            {recentOrders.map((order: any) => (
+                                <Card key={order.id} className="overflow-hidden">
+                                    <CardContent className="p-4">
+                                        <div className="flex justify-between items-start gap-3">
+                                            <div className="flex-1 min-w-0 space-y-1.5">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-semibold text-primary">#{order.id}</span>
+                                                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border ${order.status === 'completed' ? 'bg-green-50 text-green-700 border-green-200' :
+                                                        order.status === 'pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
+                                                            'bg-gray-50 text-gray-700 border-gray-200'
                                                         }`}>
-                                                        {order.status === 'completed' && <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-green-600" />}
-                                                        {order.status === 'pending' && <span className="mr-1.5 h-1.5 w-1.5 rounded-full bg-yellow-600" />}
                                                         {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                                                     </span>
-                                                </td>
-                                                <td className="p-6 align-middle font-mono font-medium">{formatPrice(order.order_total)}</td>
-                                                <td className="p-6 align-middle text-right">
-                                                    <Button variant="outline" size="sm" asChild className="hover:bg-primary hover:text-primary-foreground transition-colors">
-                                                        <Link href={`/business/orders/${order.id}`}>Manage</Link>
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
+                                                </div>
+                                                <div className="flex items-center gap-2 text-sm text-foreground/80">
+                                                    <div className="h-5 w-5 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: '#efeae3' }}>
+                                                        <span className="text-[10px] font-medium">{order.customer_name.charAt(0)}</span>
+                                                    </div>
+                                                    <span className="truncate">{order.customer_name}</span>
+                                                </div>
+                                            </div>
+                                            <div className="text-right shrink-0">
+                                                <span className="font-bold tabular-nums">{formatPrice(order.order_total)}</span>
+                                            </div>
+                                        </div>
+                                        <div className="mt-3 pt-3 border-t border-border/50 flex justify-end">
+                                            <Button variant="ghost" size="sm" asChild className="h-7 text-xs text-primary hover:bg-primary/10">
+                                                <Link href={`/business/orders/${order.id}`}>Manage &rarr;</Link>
+                                            </Button>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+
+                        {/* Desktop View: Table */}
+                        <div className="hidden md:block">
+                            <Card className="overflow-hidden border shadow-sm">
+                                <CardContent className="p-0">
+                                    <div className="w-full overflow-auto">
+                                        <table className="w-full caption-bottom text-sm">
+                                            <thead className="bg-muted/30 [&_tr]:border-b">
+                                                <tr className="border-b transition-colors">
+                                                    <th className="h-11 px-4 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Order ID</th>
+                                                    <th className="h-11 px-4 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Customer</th>
+                                                    <th className="h-11 px-4 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Status</th>
+                                                    <th className="h-11 px-4 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Total</th>
+                                                    <th className="h-11 px-4 text-right align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="[&_tr:last-child]:border-0 bg-card">
+                                                {recentOrders.map((order: any) => (
+                                                    <tr key={order.id} className="border-b transition-colors hover:bg-muted/40 cursor-pointer">
+                                                        <td className="p-4 align-middle font-medium text-primary">#{order.id}</td>
+                                                        <td className="p-4 align-middle font-medium">{order.customer_name}</td>
+                                                        <td className="p-4 align-middle">
+                                                            <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm ${order.status === 'completed' ? 'bg-green-100 text-green-700 border border-green-200' :
+                                                                order.status === 'pending' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
+                                                                    'bg-gray-100 text-gray-700 border border-gray-200'
+                                                                }`}>
+                                                                {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                                                            </span>
+                                                        </td>
+                                                        <td className="p-4 align-middle font-mono font-medium">{formatPrice(order.order_total)}</td>
+                                                        <td className="p-4 align-middle text-right">
+                                                            <Button variant="outline" size="sm" asChild className="hover:bg-primary hover:text-primary-foreground transition-colors">
+                                                                <Link href={`/business/orders/${order.id}`}>Manage</Link>
+                                                            </Button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </>
+                )}
             </div>
         </div>
     );
 }
+

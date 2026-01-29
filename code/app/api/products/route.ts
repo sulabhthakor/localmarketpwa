@@ -43,6 +43,13 @@ export async function GET(request: Request) {
             paramIndex++;
         }
 
+        const businessId = searchParams.get('business_id');
+        if (businessId) {
+            queryText += ` AND p.business_id = $${paramIndex}`;
+            params.push(parseInt(businessId));
+            paramIndex++;
+        }
+
         queryText += ` ORDER BY p.created_at DESC`;
 
         console.log('--- Product API Debug ---');

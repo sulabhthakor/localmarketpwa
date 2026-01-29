@@ -141,7 +141,8 @@ async function seedExpanded() {
 
         // 1. Create Admins
         console.log(' Creating Admins...');
-        await client.query(`INSERT INTO users (name, email, password_hash, role) VALUES ('Super Admin', 'super@market.com', $1, 'super_admin') ON CONFLICT (email) DO NOTHING`, [hash]);
+        // Schema only allows 'buyer', 'business_owner', 'admin'. 'super_admin' is invalid.
+        await client.query(`INSERT INTO users (name, email, password_hash, role) VALUES ('Super Admin', 'super@market.com', $1, 'admin') ON CONFLICT (email) DO NOTHING`, [hash]);
         await client.query(`INSERT INTO users (name, email, password_hash, role) VALUES ('General Admin', 'admin@market.com', $1, 'admin') ON CONFLICT (email) DO NOTHING`, [hash]);
 
         // 2. Create Sellers and Businesses
@@ -185,8 +186,8 @@ async function seedExpanded() {
 
             for (const prod of cat.products) {
                 const pRes = await client.query(`
-                    INSERT INTO products (business_id, category_id, name, description, price, stock, image_url, is_approved)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, true)
+                    INSERT INTO products (business_id, category_id, name, description, price, stock, image_url)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7)
                     RETURNING id
                  `, [businessId, catId, prod.name, prod.desc, prod.price, 50, prod.image]);
 

@@ -20,7 +20,12 @@ export async function POST(request: Request) {
             // since we haven't fully integrated Auth provider on the client side yet (using basic cookies).
             // Let's assume User ID 1 for now if no auth header found, or simple token check.
             // For this demo, lets hardcode userID = 1 (John Buyer).
-            const userId = 1;
+            // Dynamic User ID lookup instead of hardcoded 1
+            const userRes = await client.query('SELECT id FROM users LIMIT 1');
+            if (userRes.rows.length === 0) {
+                throw new Error('No users found in database');
+            }
+            const userId = userRes.rows[0].id;
             // Business ID? Orders might contain products from multiple businesses.
             // Our schema links Order to Business. If an order has multiple business items, 
             // we should conceptually split it into sub-orders or the schema enforces 1 business per order.
@@ -97,8 +102,63 @@ export async function POST(request: Request) {
             client.release();
         }
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error creating order:', error);
+        return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+    }
+}
+
+export async function GET(request: Request) {
+    const client = await pool.connect();
+    try {
+        // 1. Get User (Mock Auth)
+        const userRes = await client.query('SELECT id FROM users LIMIT 1');
+        if (userRes.rows.length === 0) {
+            return NextResponse.json({ orders: [] });
+        }
+        const userId = userRes.rows[0].id;
+
+        // 2. Fetch Orders with Business details
+        const ordersRes = await client.query(`
+            SELECT o.*, b.name as business_name, o.total_amount
+            FROM orders o
+            JOIN businesses b ON o.business_id = b.id
+            WHERE o.user_id = $1
+            ORDER BY o.id DESC
+        `, [userId]);
+
+        const orders = ordersRes.rows;
+
+        // 3. Fetch Items for these orders
+        // Use a single query for efficiency
+        if (orders.length > 0) {
+            const orderIds = orders.map(o => o.id);
+            const itemsRes = await client.query(`
+                SELECT oi.*, p.name as product_name, p.image_url
+                FROM order_items oi
+                JOIN products p ON oi.product_id = p.id
+                WHERE oi.order_id = ANY($1)
+            `, [orderIds]);
+
+            const itemsByOrder = new Map();
+            itemsRes.rows.forEach(item => {
+                if (!itemsByOrder.has(item.order_id)) {
+                    itemsByOrder.set(item.order_id, []);
+                }
+                itemsByOrder.get(item.order_id).push(item);
+            });
+
+            // Attach items to orders
+            orders.forEach(order => {
+                order.items = itemsByOrder.get(order.id) || [];
+            });
+        }
+
+        return NextResponse.json({ orders });
+    } catch (error) {
+        console.error('Error fetching orders:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    } finally {
+        client.release();
     }
 }

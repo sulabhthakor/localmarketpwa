@@ -83,57 +83,114 @@ export default async function OrdersPage() {
                 </Button>
             </div>
 
-            <Card className="overflow-hidden border shadow-sm">
-                <CardContent className="p-0">
+            <div className="flex flex-col gap-6">
+                {/* Mobile View: Cards */}
+                <div className="md:hidden space-y-4">
                     {orders.length === 0 ? (
-                        <div className="p-12 text-center text-muted-foreground">
-                            No orders found.
-                        </div>
+                        <Card>
+                            <CardContent className="p-8 text-center text-muted-foreground">
+                                No orders found.
+                            </CardContent>
+                        </Card>
                     ) : (
-                        <div className="w-full overflow-auto">
-                            <table className="w-full caption-bottom text-sm">
-                                <thead className="bg-muted/30 [&_tr]:border-b">
-                                    <tr className="border-b transition-colors">
-                                        <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Order ID</th>
-                                        <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Date</th>
-                                        <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Customer</th>
-                                        <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Items</th>
-                                        <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Status</th>
-                                        <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Total</th>
-                                        <th className="h-12 px-6 text-right align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="[&_tr:last-child]:border-0 bg-card">
-                                    {orders.map((order: any) => (
-                                        <tr key={order.id} className="border-b transition-colors hover:bg-muted/40 cursor-pointer">
-                                            <td className="p-6 align-middle font-medium">#{order.id}</td>
-                                            <td className="p-6 align-middle text-muted-foreground">
-                                                {new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium' }).format(new Date(order.created_at))}
-                                            </td>
-                                            <td className="p-6 align-middle font-medium">{order.customer_name}</td>
-                                            <td className="p-6 align-middle text-muted-foreground">{order.item_count} items</td>
-                                            <td className="p-6 align-middle">
-                                                <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm ${order.status === 'completed' ? 'bg-green-100 text-green-700 border border-green-200' :
-                                                        order.status === 'pending' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
-                                                            'bg-gray-100 text-gray-700 border border-gray-200'
+                        orders.map((order: any) => (
+                            <Card key={order.id} className="overflow-hidden border shadow-sm">
+                                <CardContent className="p-4 space-y-3">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="font-bold text-lg">#{order.id}</span>
+                                                <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border ${order.status === 'completed' ? 'bg-green-50 text-green-700 border-green-200' :
+                                                    order.status === 'pending' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
+                                                        'bg-gray-50 text-gray-700 border-gray-200'
                                                     }`}>
                                                     {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                                                 </span>
-                                            </td>
-                                            <td className="p-6 align-middle font-mono font-medium">{formatPrice(order.order_total)}</td>
-                                            <td className="p-6 align-middle text-right">
-                                                <Button variant="outline" size="sm" asChild className="hover:bg-primary hover:text-primary-foreground transition-colors">
-                                                    <Link href={`/business/orders/${order.id}`}>Manage</Link>
-                                                </Button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                            </div>
+                                            <p className="text-sm text-muted-foreground">
+                                                {new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium' }).format(new Date(order.created_at))}
+                                            </p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="font-bold">{formatPrice(order.order_total)}</p>
+                                            <p className="text-xs text-muted-foreground">{order.item_count} items</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-2 border-t border-border/50 flex items-center justify-between">
+                                        <div className="flex items-center gap-2 text-sm text-foreground/80">
+                                            <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center">
+                                                <span className="text-xs font-medium text-primary">{order.customer_name.charAt(0)}</span>
+                                            </div>
+                                            {order.customer_name}
+                                        </div>
+                                        <Button variant="ghost" size="sm" asChild className="h-8 gap-1 text-primary hover:text-primary hover:bg-primary/10 pl-2 pr-1">
+                                            <Link href={`/business/orders/${order.id}`}>
+                                                Manage <ArrowLeft className="h-3 w-3 rotate-180" />
+                                            </Link>
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))
                     )}
-                </CardContent>
-            </Card>
+                </div>
+
+                {/* Desktop View: Table */}
+                <div className="hidden md:block">
+                    <Card className="overflow-hidden border shadow-sm">
+                        <CardContent className="p-0">
+                            {orders.length === 0 ? (
+                                <div className="p-12 text-center text-muted-foreground">
+                                    No orders found.
+                                </div>
+                            ) : (
+                                <div className="w-full overflow-auto">
+                                    <table className="w-full caption-bottom text-sm">
+                                        <thead className="bg-muted/30 [&_tr]:border-b">
+                                            <tr className="border-b transition-colors">
+                                                <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Order ID</th>
+                                                <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Date</th>
+                                                <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Customer</th>
+                                                <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Items</th>
+                                                <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Status</th>
+                                                <th className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Total</th>
+                                                <th className="h-12 px-6 text-right align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="[&_tr:last-child]:border-0 bg-card">
+                                            {orders.map((order: any) => (
+                                                <tr key={order.id} className="border-b transition-colors hover:bg-muted/40 cursor-pointer">
+                                                    <td className="p-6 align-middle font-medium">#{order.id}</td>
+                                                    <td className="p-6 align-middle text-muted-foreground">
+                                                        {new Intl.DateTimeFormat('en-IN', { dateStyle: 'medium' }).format(new Date(order.created_at))}
+                                                    </td>
+                                                    <td className="p-6 align-middle font-medium">{order.customer_name}</td>
+                                                    <td className="p-6 align-middle text-muted-foreground">{order.item_count} items</td>
+                                                    <td className="p-6 align-middle">
+                                                        <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm ${order.status === 'completed' ? 'bg-green-100 text-green-700 border border-green-200' :
+                                                            order.status === 'pending' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
+                                                                'bg-gray-100 text-gray-700 border border-gray-200'
+                                                            }`}>
+                                                            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                                                        </span>
+                                                    </td>
+                                                    <td className="p-6 align-middle font-mono font-medium">{formatPrice(order.order_total)}</td>
+                                                    <td className="p-6 align-middle text-right">
+                                                        <Button variant="outline" size="sm" asChild className="hover:bg-primary hover:text-primary-foreground transition-colors">
+                                                            <Link href={`/business/orders/${order.id}`}>Manage</Link>
+                                                        </Button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
         </div>
     );
 }

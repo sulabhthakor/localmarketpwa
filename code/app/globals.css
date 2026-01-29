@@ -119,7 +119,13 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Bottom navigation safe area for PWA */
+.bottom-nav-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0);
 }

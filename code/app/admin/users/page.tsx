@@ -29,10 +29,12 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Edit, Key, Loader2, ShieldAlert } from "lucide-react";
+import { Edit, Key, Loader2, ShieldAlert, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { useAuthUser } from "@/hooks/use-auth-user";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 type User = {
     id: number;
@@ -143,59 +145,87 @@ export default function AdminUsersPage() {
         }
     };
 
-    if (loading) return <div className="p-8 flex justify-center"><Loader2 className="animate-spin" /></div>;
+    if (loading) return <div className="flex h-[50vh] w-full items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>;
 
     return (
-        <div className="container py-10 max-w-7xl mx-auto space-y-8">
-            <div className="flex items-center justify-between">
+        <div className="container py-10 px-4 sm:px-6 max-w-7xl mx-auto space-y-8">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-                    <p className="text-muted-foreground mt-1">Manage accounts, roles, and permissions.</p>
+                    <p className="text-muted-foreground mt-1">Manage accounts, roles, and system access.</p>
                 </div>
-                <Button variant="outline" asChild>
-                    <Link href="/admin">Back to Dashboard</Link>
-                </Button>
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                    <div className="relative flex-1 md:w-[300px]">
+                        <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            placeholder="Search users..."
+                            className="pl-9"
+                            onChange={(e) => {
+                                const term = e.target.value.toLowerCase();
+                                const rows = document.querySelectorAll('.user-row');
+                                rows.forEach(row => {
+                                    const text = row.textContent?.toLowerCase() || "";
+                                    (row as HTMLElement).style.display = text.includes(term) ? "" : "none";
+                                });
+                            }}
+                        />
+                    </div>
+                </div>
             </div>
 
-            <div className="border rounded-lg bg-card shadow-sm overflow-hidden">
+            {/* Desktop Table View */}
+            <div className="hidden md:block border rounded-lg bg-card shadow-sm overflow-hidden">
                 <Table>
-                    <TableHeader>
+                    <TableHeader className="bg-muted/30 [&_tr]:border-b">
                         <TableRow>
-                            <TableHead className="w-[80px]">ID</TableHead>
-                            <TableHead>User</TableHead>
-                            <TableHead>Role</TableHead>
-                            <TableHead className="hidden md:table-cell">Email</TableHead>
-                            <TableHead className="hidden md:table-cell">Created</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs w-[80px]">ID</TableHead>
+                            <TableHead className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">User</TableHead>
+                            <TableHead className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Role</TableHead>
+                            <TableHead className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Email</TableHead>
+                            <TableHead className="h-12 px-6 text-left align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Joined</TableHead>
+                            <TableHead className="h-12 px-6 text-right align-middle font-medium text-muted-foreground uppercase tracking-wider text-xs">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>
+                    <TableBody className="[&_tr:last-child]:border-0 bg-card">
                         {users.map((user) => (
-                            <TableRow key={user.id}>
-                                <TableCell className="font-mono text-xs">{user.id}</TableCell>
-                                <TableCell>
-                                    <div className="font-medium text-sm">{user.name}</div>
-                                    <div className="text-xs text-muted-foreground md:hidden">{user.email}</div>
+                            <TableRow key={user.id} className="user-row border-b transition-colors hover:bg-muted/40">
+                                <TableCell className="p-6 font-mono text-xs text-muted-foreground">#{user.id}</TableCell>
+                                <TableCell className="p-6">
+                                    <div className="flex items-center gap-3">
+                                        <Avatar className="h-9 w-9 border">
+                                            <AvatarFallback className={cn(
+                                                "text-xs font-semibold",
+                                                user.role === 'admin' ? "bg-primary/10 text-primary" : "bg-secondary text-secondary-foreground"
+                                            )}>
+                                                {user.name.slice(0, 2).toUpperCase()}
+                                            </AvatarFallback>
+                                        </Avatar>
+                                        <div className="font-medium text-sm">{user.name}</div>
+                                    </div>
                                 </TableCell>
-                                <TableCell>
-                                    <Badge variant={
-                                        user.role === 'super_admin' ? 'destructive' :
-                                            user.role === 'admin' ? 'default' :
-                                                user.role === 'business_owner' ? 'secondary' : 'outline'
-                                    }>
-                                        {user.role}
+                                <TableCell className="p-6">
+                                    <Badge variant="outline" className={cn(
+                                        "font-normal capitalize px-2.5 py-0.5",
+                                        user.role === 'super_admin' && "border-red-200 bg-red-50 text-red-700",
+                                        user.role === 'admin' && "border-blue-200 bg-blue-50 text-blue-700",
+                                        user.role === 'business_owner' && "border-orange-200 bg-orange-50 text-orange-700",
+                                        user.role === 'buyer' && "border-slate-200 bg-slate-50 text-slate-700"
+                                    )}>
+                                        {user.role.replace('_', ' ')}
                                     </Badge>
                                 </TableCell>
-                                <TableCell className="hidden md:table-cell text-sm text-muted-foreground">{user.email}</TableCell>
-                                <TableCell className="hidden md:table-cell text-xs text-muted-foreground">
+                                <TableCell className="p-6 text-sm text-muted-foreground">{user.email}</TableCell>
+                                <TableCell className="p-6 text-sm text-muted-foreground">
                                     {new Date(user.created_at).toLocaleDateString()}
                                 </TableCell>
-                                <TableCell className="text-right space-x-2">
-                                    <Button variant="ghost" size="icon" onClick={() => openEdit(user)} title="Edit Details">
-                                        <Edit className="h-4 w-4" />
+                                <TableCell className="p-6 text-right space-x-2">
+                                    <Button variant="ghost" size="sm" onClick={() => openEdit(user)} className="h-8 w-8 p-0">
+                                        <Edit className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                                        <span className="sr-only">Edit</span>
                                     </Button>
-                                    <Button variant="ghost" size="icon" onClick={() => openReset(user)} className="text-destructive hover:bg-destructive/10" title="Reset Password">
+                                    <Button variant="ghost" size="sm" onClick={() => openReset(user)} className="h-8 w-8 p-0 text-destructive/70 hover:text-destructive hover:bg-destructive/10">
                                         <Key className="h-4 w-4" />
+                                        <span className="sr-only">Reset Password</span>
                                     </Button>
                                 </TableCell>
                             </TableRow>
@@ -204,24 +234,76 @@ export default function AdminUsersPage() {
                 </Table>
             </div>
 
+            {/* Mobile Card View */}
+            <div className="grid grid-cols-1 gap-4 md:hidden">
+                {users.map((user) => (
+                    <div key={user.id} className="user-row bg-card border rounded-xl p-4 shadow-sm flex flex-col gap-4">
+                        <div className="flex items-start justify-between">
+                            <div className="flex items-center gap-3">
+                                <Avatar className="h-10 w-10 border">
+                                    <AvatarFallback className={cn(
+                                        "font-medium",
+                                        user.role === 'admin' ? "bg-primary/10 text-primary" : "bg-muted"
+                                    )}>
+                                        {user.name.slice(0, 2).toUpperCase()}
+                                    </AvatarFallback>
+                                </Avatar>
+                                <div>
+                                    <h3 className="font-semibold text-sm">{user.name}</h3>
+                                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                                </div>
+                            </div>
+                            <Button variant="ghost" size="icon" onClick={() => openEdit(user)} className="h-8 w-8 -mr-2 -mt-1">
+                                <Edit className="h-4 w-4 text-muted-foreground" />
+                            </Button>
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                            <Badge variant="outline" className={cn(
+                                "capitalize text-[10px] px-2 py-0.5 h-6",
+                                user.role === 'super_admin' && "border-red-200 bg-red-50 text-red-700",
+                                user.role === 'admin' && "border-blue-200 bg-blue-50 text-blue-700",
+                                user.role === 'business_owner' && "border-orange-200 bg-orange-50 text-orange-700",
+                                user.role === 'buyer' && "border-slate-200 bg-slate-50 text-slate-700"
+                            )}>
+                                {user.role.replace('_', ' ')}
+                            </Badge>
+                            <span className="text-xs text-muted-foreground">Joined {new Date(user.created_at).toLocaleDateString()}</span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 pt-3 border-t">
+                            <Button variant="outline" size="sm" className="w-full text-xs h-9" onClick={() => openEdit(user)}>
+                                Edit Details
+                            </Button>
+                            <Button variant="outline" size="sm" className="w-full text-xs h-9 border-destructive/20 text-destructive hover:text-destructive hover:bg-destructive/5" onClick={() => openReset(user)}>
+                                <Key className="mr-2 h-3.5 w-3.5" />
+                                Reset Password
+                            </Button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
             {/* Edit Dialog */}
             <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Edit User</DialogTitle>
-                        <DialogDescription>Update account details for #{editingUser?.id}</DialogDescription>
+                        <DialogTitle>Edit User Profile</DialogTitle>
+                        <DialogDescription>
+                            Make changes to account details for <span className="font-medium text-foreground">#{editingUser?.id}</span>.
+                        </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="name">Name</Label>
+                            <Label htmlFor="name">Full Name</Label>
                             <Input id="name" value={editName} onChange={(e) => setEditName(e.target.value)} />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
+                            <Label htmlFor="email">Email Address</Label>
                             <Input id="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="role">Role</Label>
+                            <Label htmlFor="role">Role Permission</Label>
                             <Select value={editRole} onValueChange={setEditRole}>
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select role" />
@@ -229,7 +311,6 @@ export default function AdminUsersPage() {
                                 <SelectContent>
                                     <SelectItem value="buyer">Buyer</SelectItem>
                                     <SelectItem value="business_owner">Business Owner</SelectItem>
-                                    {/* Only Super Admin can promote to Admin */}
                                     {(currentUser?.role === 'super_admin' || currentUser?.role === 'admin') && (
                                         <SelectItem value="admin">Admin</SelectItem>
                                     )}
@@ -241,7 +322,7 @@ export default function AdminUsersPage() {
                         </div>
                     </div>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
+                        <Button variant="ghost" onClick={() => setIsEditOpen(false)}>Cancel</Button>
                         <Button onClick={handleSaveUser} disabled={processing}>
                             {processing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                             Save Changes
@@ -254,22 +335,27 @@ export default function AdminUsersPage() {
             <Dialog open={isResetOpen} onOpenChange={setIsResetOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Reset Password</DialogTitle>
+                        <DialogTitle className="text-destructive flex items-center gap-2">
+                            <ShieldAlert className="h-5 w-5" />
+                            Reset Password
+                        </DialogTitle>
                         <DialogDescription>
-                            Enter a new password for <span className="font-semibold">{resettingUser?.name}</span>.
-                            This action cannot be undone.
+                            This will manually override the password for <span className="font-semibold text-foreground">{resettingUser?.name}</span>.
+                            This action is immediate.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="new-password">New Password</Label>
+                            <Label htmlFor="new-password">New Temporary Password</Label>
                             <Input
                                 id="new-password"
-                                type="text" // Show as text for copy/paste visibility, user can verify
+                                type="text"
+                                className="font-mono text-center tracking-wider bg-muted/50"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
-                                placeholder="Enter safe password"
+                                placeholder="Enter characters..."
                             />
+                            <p className="text-xs text-muted-foreground">Type a secure temporary password. Copy it before saving.</p>
                         </div>
                     </div>
                     <DialogFooter>

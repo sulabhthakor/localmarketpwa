@@ -77,10 +77,10 @@ export default function Home() {
 
   // Featured Sellers (Static for curated feel)
   const sellers = [
-    { id: 2, name: "Amul Parlour", image: "https://tse2.mm.bing.net/th?q=Amul+Store+India&w=500&h=300&c=7", rating: 4.8, type: "Dairy" },
-    { id: 1, name: "Mohan Sweets", image: "https://tse2.mm.bing.net/th?q=Indian+Sweets+Shop&w=500&h=300&c=7", rating: 4.9, type: "Sweets" },
-    { id: 0, name: "Raju Vegetables", image: "https://tse2.mm.bing.net/th?q=Vegetable+Vendor+India&w=500&h=300&c=7", rating: 4.7, type: "Vegetables" },
-    { id: 3, name: "Vijay General", image: "https://tse2.mm.bing.net/th?q=Indian+Kirana+Store&w=500&h=300&c=7", rating: 4.5, type: "Grocery" },
+    { id: 7, name: "Amul Parlour", image: "https://tse2.mm.bing.net/th?q=Amul+Store+India&w=500&h=300&c=7", rating: 4.8, type: "Dairy" },
+    { id: 6, name: "Mohan Sweets", image: "https://tse2.mm.bing.net/th?q=Indian+Sweets+Shop&w=500&h=300&c=7", rating: 4.9, type: "Sweets" },
+    { id: 5, name: "Raju Vegetables", image: "https://tse2.mm.bing.net/th?q=Vegetable+Vendor+India&w=500&h=300&c=7", rating: 4.7, type: "Vegetables" },
+    { id: 8, name: "Vijay General", image: "https://tse2.mm.bing.net/th?q=Indian+Kirana+Store&w=500&h=300&c=7", rating: 4.5, type: "Grocery" },
   ];
 
   const container = {
@@ -100,7 +100,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-background">
 
       {/* Hero Section */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-background py-20">
+      <section className="relative min-h-[75dvh] md:min-h-[85vh] flex items-center justify-center overflow-hidden bg-background py-0">
         {/* Background with Theme Overlay */}
         <div className="absolute inset-0 z-0">
           <img
@@ -116,7 +116,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="max-w-3xl mx-auto space-y-8"
+            className="max-w-3xl mx-auto space-y-6 md:space-y-8"
           >
             <Badge variant="outline" className="px-4 py-1.5 text-sm bg-card/50 text-foreground border-border backdrop-blur-md shadow-sm">
               <MapPin className="w-4 h-4 mr-2 text-primary" />
@@ -225,7 +225,7 @@ export default function Home() {
                 transition={{ delay: i * 0.1 }}
                 viewport={{ once: true }}
               >
-                <Link href={`/business?id=${seller.id}`} className="block group">
+                <Link href={`/products?business_id=${seller.id}`} className="block group">
                   <div className="relative overflow-hidden rounded-2xl aspect-[4/3] mb-3">
                     <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors z-10" />
                     <img src={seller.image} alt={seller.name} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" />
@@ -279,49 +279,37 @@ export default function Home() {
       </section>
 
       {/* Features / Trust */}
-      <section className="py-24 relative overflow-hidden">
-        {/* Decorative Background Blob */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-primary/5 rounded-full blur-3xl -z-10" />
-
+      <section className="py-16 md:py-20 bg-muted/30">
         <div className="container px-4 mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
                 icon: Clock,
                 title: "30-Min Delivery",
                 desc: "Superfast delivery for eligible local orders within Gujarat city limits.",
-                color: "text-primary",
-                bg: "bg-primary/10",
-                border: "hover:border-primary/20"
               },
               {
                 icon: Shield,
                 title: "Genuine Products",
                 desc: "100% authentic items sourced directly from verified local business owners.",
-                color: "text-primary",
-                bg: "bg-primary/10",
-                border: "hover:border-primary/20"
               },
               {
                 icon: TrendingUp,
                 title: "Best Prices",
                 desc: "Get competitive local market rates without the hassle of going out.",
-                color: "text-primary",
-                bg: "bg-primary/10",
-                border: "hover:border-primary/20"
               }
             ].map((feature, i) => (
               <div
                 key={i}
-                className={`relative group bg-white dark:bg-card p-8 rounded-3xl border border-border/50 shadow-lg shadow-primary/5 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${feature.border}`}
+                className="bg-card p-6 md:p-8 rounded-2xl border border-border/50 shadow-sm text-center"
               >
-                <div className={`w-14 h-14 ${feature.bg} ${feature.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
+                <div className="w-14 h-14 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mx-auto mb-5">
                   <feature.icon className="w-7 h-7" />
                 </div>
-                <h3 className="text-xl font-bold mb-3 text-foreground group-hover:text-primary transition-colors">
+                <h3 className="text-lg md:text-xl font-bold mb-2 text-foreground">
                   {feature.title}
                 </h3>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
                   {feature.desc}
                 </p>
               </div>

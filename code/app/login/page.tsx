@@ -30,9 +30,10 @@ export default function LoginPage() {
                 body: JSON.stringify({ email, password }),
             });
 
+            const data = await res.json();
+
             if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || "Login failed");
+                throw new Error(data.error || data.message || "Login failed");
             }
 
             // Successful login
@@ -40,7 +41,12 @@ export default function LoginPage() {
             window.dispatchEvent(new Event('auth-change'));
 
             router.refresh();
-            router.push("/");
+
+            if (data.user?.role === 'admin') {
+                router.push("/admin");
+            } else {
+                router.push("/");
+            }
         } catch (err: any) {
             setError(err.message);
         } finally {

@@ -13,8 +13,9 @@ import {
     SheetTitle,
     SheetTrigger
 } from "@/components/ui/sheet";
-import { Filter, Search, Loader2 } from "lucide-react";
+import { Filter, Search, Loader2, ChevronRight, Home } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { formatPrice } from "@/lib/utils";
 
 interface SidebarFiltersProps {
@@ -38,31 +39,17 @@ const SidebarFilters = ({
     handlePriceChange,
     applyPriceFilter
 }: SidebarFiltersProps) => (
-    <div className="space-y-8">
-        <div className="space-y-4">
-            <h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">Search</h3>
-            <div className="space-y-4">
-                <div className="relative group">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                    <Input
-                        type="search"
-                        placeholder="Search products..."
-                        className="pl-10 h-11 bg-card border-2 border-border/50 focus-visible:border-primary focus-visible:ring-0 rounded-xl shadow-sm transition-all hover:border-primary/50"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
-                </div>
-            </div>
-        </div>
-
-        <div className="space-y-4">
-            <h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">Categories</h3>
-            <div className="flex flex-col space-y-1">
+    <div className="space-y-6">
+        {/* Categories Section */}
+        <div className="space-y-3">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Categories</h3>
+            <div className="flex flex-col gap-1 max-h-[200px] overflow-y-auto pr-1">
                 <Button
                     variant="ghost"
-                    className={`justify-start font-medium transition-all duration-200 ${!categoryParam
-                        ? "bg-primary text-primary-foreground hover:bg-white hover:text-primary hover:border hover:border-primary shadow-md"
-                        : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+                    size="sm"
+                    className={`justify-start font-medium text-sm h-9 px-3 transition-all duration-200 ${!categoryParam
+                        ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
+                        : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
                         }`}
                     onClick={() => handleCategoryClick(null)}
                 >
@@ -72,9 +59,10 @@ const SidebarFilters = ({
                     <Button
                         key={cat.id}
                         variant="ghost"
-                        className={`justify-start font-medium transition-all duration-200 ${categoryParam === cat.id.toString()
-                            ? "bg-primary text-primary-foreground hover:bg-white hover:text-primary hover:border hover:border-primary shadow-md"
-                            : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+                        size="sm"
+                        className={`justify-start font-medium text-sm h-9 px-3 transition-all duration-200 ${categoryParam === cat.id.toString()
+                            ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
+                            : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
                             }`}
                         onClick={() => handleCategoryClick(cat.id)}
                     >
@@ -84,15 +72,19 @@ const SidebarFilters = ({
             </div>
         </div>
 
-        <div className="space-y-6">
+        {/* Divider */}
+        <div className="border-t border-border/60" />
+
+        {/* Price Section */}
+        <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <h3 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">Price Limit</h3>
-                <span className="text-xs font-medium text-muted-foreground">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Price Range</h3>
+                <span className="text-xs font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
                     {formatPrice(priceRange[0])} - {formatPrice(priceRange[1])}
                 </span>
             </div>
 
-            <div className="px-2">
+            <div className="px-1">
                 <Slider
                     defaultValue={[0, 1000]}
                     value={priceRange}
@@ -103,6 +95,14 @@ const SidebarFilters = ({
                     className="py-4"
                 />
             </div>
+
+            <Button
+                onClick={applyPriceFilter}
+                size="sm"
+                className="w-full h-9 font-medium"
+            >
+                Apply Price Filter
+            </Button>
         </div>
     </div>
 );
@@ -142,9 +142,11 @@ function ProductListContent() {
 
         const minPrice = searchParams.get('min_price');
         const maxPrice = searchParams.get('max_price');
+        const businessId = searchParams.get('business_id');
 
         if (minPrice) params.append('min_price', minPrice);
         if (maxPrice) params.append('max_price', maxPrice);
+        if (businessId) params.append('business_id', businessId);
 
         fetch(`/api/products?${params.toString()}`)
             .then(res => res.json())
@@ -156,7 +158,7 @@ function ProductListContent() {
                 console.error(err);
                 setLoading(false);
             });
-    }, [categoryParam, search, searchParams.toString()]); // Re-fetch when filters change
+    }, [categoryParam, search, searchParams.get('min_price'), searchParams.get('max_price'), searchParams.get('business_id')]); // Re-fetch when filters change
 
 
     const handleCategoryClick = (catId: number | null) => {
@@ -188,24 +190,30 @@ function ProductListContent() {
         if (min && max) {
             setPriceRange([parseInt(min), parseInt(max)]);
         }
-    }, [searchParams]);
+    }, [searchParams.get("min_price"), searchParams.get("max_price")]);
+
+    useEffect(() => {
+        console.log("ProductListContent MOUNTED");
+        return () => console.log("ProductListContent UNMOUNTED");
+    }, []);
 
 
 
     return (
-        <div className="container mx-auto px-4 py-8 md:px-6">
-            {/* Header / Backdrop */}
-            {/* Header / Backdrop */}
-            <div className="flex flex-col md:flex-row items-end justify-between gap-4 mb-12">
-                <div>
-                    <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground">
-                        Local <span className="text-primary">Marketplace</span>
-                    </h1>
-                    <p className="text-lg text-muted-foreground mt-3 max-w-2xl">
-                        Explore our curated collection of authentic goods from Gujarat's best sellers.
-                    </p>
-                    <div className="h-1.5 w-24 bg-primary rounded-full mt-4 opacity-90" />
-                </div>
+        <div className="container mx-auto px-4 py-6 md:px-6">
+            {/* Breadcrumb */}
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <nav className="flex items-center text-sm">
+                    <Link
+                        href="/"
+                        className="flex items-center text-muted-foreground hover:text-primary transition-colors"
+                    >
+                        <Home className="h-4 w-4" />
+                        <span className="ml-1.5 hidden sm:inline">Home</span>
+                    </Link>
+                    <ChevronRight className="h-4 w-4 mx-2 text-muted-foreground/50" />
+                    <span className="font-medium text-foreground">Products</span>
+                </nav>
 
                 <Sheet>
                     <SheetTrigger asChild>
@@ -214,12 +222,12 @@ function ProductListContent() {
                             Filters
                         </Button>
                     </SheetTrigger>
-                    <SheetContent side="left" className="w-[300px] sm:w-[400px]">
-                        <SheetHeader>
-                            <SheetTitle>Filters</SheetTitle>
-                            <SheetDescription>Refine your product search.</SheetDescription>
+                    <SheetContent side="left" className="w-[85vw] max-w-[320px] p-0 flex flex-col h-full">
+                        <SheetHeader className="px-5 pt-5 pb-4 border-b bg-muted/30 shrink-0">
+                            <SheetTitle className="text-lg font-bold">Filters</SheetTitle>
+                            <SheetDescription className="text-sm">Refine your product search.</SheetDescription>
                         </SheetHeader>
-                        <div className="py-6">
+                        <div className="flex-1 overflow-y-auto px-5 py-5">
                             <SidebarFilters
                                 search={search}
                                 setSearch={setSearch}
@@ -233,6 +241,20 @@ function ProductListContent() {
                         </div>
                     </SheetContent>
                 </Sheet>
+            </div>
+
+            {/* Mobile Search Bar - Always visible on mobile */}
+            <div className="md:hidden mb-6">
+                <div className="relative group">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                    <Input
+                        type="search"
+                        placeholder="Search products..."
+                        className="pl-10 h-12 bg-card border-2 border-border/50 focus-visible:border-primary focus-visible:ring-0 rounded-xl shadow-sm transition-all hover:border-primary/50 w-full text-base"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                    />
+                </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

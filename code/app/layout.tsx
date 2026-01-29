@@ -3,8 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { BottomNav } from "@/components/BottomNav";
 import I18nProvider from "@/components/i18n-provider";
 import { PwaRegister } from "@/components/PwaRegister";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,12 +47,14 @@ export default function RootLayout({
       >
         <I18nProvider>
           <Navbar />
-          <main className="flex-1">
+          <main className="flex-1 pb-16 md:pb-0">
             {children}
           </main>
           <Footer />
+          <BottomNav />
         </I18nProvider>
         <PwaRegister />
+        <Toaster />
       </body>
     </html>
   );

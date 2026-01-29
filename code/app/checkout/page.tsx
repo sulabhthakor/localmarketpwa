@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { formatPrice } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function CheckoutPage() {
     const cart = useCart();
@@ -52,18 +53,21 @@ export default function CheckoutPage() {
                 })
             });
 
-            if (!res.ok) throw new Error('Order failed');
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.error || 'Order failed');
+            }
 
             const data = await res.json();
 
             cart.clearCart();
             // Redirect to success or home
             // Ideally: router.push(`/order-confirmation/${data.orderIds[0]}`);
-            alert(`Order placed successfully! Order IDs: ${data.orderIds.join(', ')}`);
+            toast.success(`Order placed successfully! Order IDs: ${data.orderIds.join(', ')}`);
             router.push("/");
-        } catch (err) {
+        } catch (err: any) {
             console.error(err);
-            alert("Failed to place order.");
+            toast.error(`Failed to place order: ${err.message}`);
         } finally {
             setLoading(false);
         }

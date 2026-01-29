@@ -28,14 +28,14 @@ function UserMenu() {
     const { user, loading, logout } = useAuthUser();
 
     if (loading) return (
-        <Button variant="ghost" size="icon" className="hover:bg-secondary/80 rounded-full">
+        <Button variant="ghost" size="icon" className="hover:bg-white rounded-full">
             <User className="h-5 w-5 opacity-50" />
         </Button>
     );
 
     if (!user) {
         return (
-            <Button variant="ghost" size="icon" asChild className="rounded-full">
+            <Button variant="ghost" size="icon" asChild className="rounded-full hover:bg-white hover:text-primary transition-colors">
                 <Link href="/login">
                     <User className="h-5 w-5" />
                     <span className="sr-only">Account</span>
@@ -56,10 +56,10 @@ function UserMenu() {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full" suppressHydrationWarning>
+                <Button variant="ghost" className="group relative h-8 w-8 rounded-full hover:bg-white hover:text-primary transition-colors" suppressHydrationWarning>
                     <Avatar className="h-8 w-8">
                         <AvatarImage src={user.image} alt={user.name} />
-                        <AvatarFallback>{initials}</AvatarFallback>
+                        <AvatarFallback className="group-hover:bg-[#fe330a] group-hover:text-white transition-colors">{initials}</AvatarFallback>
                     </Avatar>
                 </Button>
             </DropdownMenuTrigger>
@@ -176,12 +176,30 @@ export function Navbar() {
                 {/* Center: Nav & Search (Desktop Only) */}
                 <div className="hidden md:flex flex-1 items-center justify-center gap-6 xl:gap-10 mx-6">
                     <nav className="flex items-center gap-1">
-                        <Button variant={pathname === "/products" ? "secondary" : "ghost"} asChild size="sm" className="rounded-full px-4 h-9 font-medium text-sm data-[state=active]:bg-secondary transition-all">
-                            <Link href="/products">Shop</Link>
-                        </Button>
-                        <Button variant={pathname?.startsWith("/business") ? "secondary" : "ghost"} asChild size="sm" className="rounded-full px-4 h-9 font-medium text-sm transition-all">
-                            <Link href="/business">Business</Link>
-                        </Button>
+                        {[
+                            { href: "/products", label: "Shop" },
+                            { href: "/contact", label: "Contact" },
+                            { href: "/faq", label: "FAQ" },
+                        ].map((link) => {
+                            const isActive = pathname === link.href;
+                            return (
+                                <Button
+                                    key={link.href}
+                                    variant="ghost"
+                                    asChild
+                                    size="sm"
+                                    className={cn(
+                                        "rounded-full px-4 h-9 font-medium text-sm transition-all duration-200",
+                                        "hover:bg-white hover:text-primary",
+                                        isActive
+                                            ? "bg-primary text-primary-foreground hover:bg-white hover:text-primary shadow-sm"
+                                            : "text-muted-foreground hover:text-primary"
+                                    )}
+                                >
+                                    <Link href={link.href}>{link.label}</Link>
+                                </Button>
+                            );
+                        })}
                     </nav>
 
                     <div className="relative w-full max-w-sm">
@@ -210,7 +228,7 @@ export function Navbar() {
 
                     <div className="h-6 w-px bg-border/60 mx-1 hidden sm:block" />
 
-                    <Button variant="ghost" size="icon" asChild className="relative rounded-full h-10 w-10 transition-colors">
+                    <Button variant="ghost" size="icon" asChild className="relative rounded-full h-10 w-10 transition-all hover:bg-white hover:text-primary">
                         <Link href="/cart">
                             <ShoppingCart className="h-5 w-5" />
                             <span className="sr-only">Cart</span>
