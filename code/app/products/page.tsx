@@ -5,6 +5,7 @@ import { ProductCard } from "@/components/product-card";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
     Sheet,
     SheetContent,
@@ -27,6 +28,7 @@ interface SidebarFiltersProps {
     priceRange: number[];
     handlePriceChange: (value: number[]) => void;
     applyPriceFilter: () => void;
+    clearFilters: () => void;
 }
 
 const SidebarFilters = ({
@@ -37,39 +39,52 @@ const SidebarFilters = ({
     handleCategoryClick,
     priceRange,
     handlePriceChange,
-    applyPriceFilter
+    applyPriceFilter,
+    clearFilters
 }: SidebarFiltersProps) => (
     <div className="space-y-6">
         {/* Categories Section */}
         <div className="space-y-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Categories</h3>
-            <div className="flex flex-col gap-1 max-h-[200px] overflow-y-auto pr-1">
+            <div className="flex items-center justify-between">
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Categories</h3>
                 <Button
                     variant="ghost"
                     size="sm"
-                    className={`justify-start font-medium text-sm h-9 px-3 transition-all duration-200 ${!categoryParam
-                        ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
-                        : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
-                        }`}
-                    onClick={() => handleCategoryClick(null)}
+                    onClick={clearFilters}
+                    className="h-6 px-2 text-xs text-muted-foreground hover:text-[#efeae3]"
                 >
-                    All Products
+                    Clear All
                 </Button>
-                {categories.map((cat) => (
+            </div>
+            <ScrollArea className="h-[200px] pr-1">
+                <div className="flex flex-col gap-1">
                     <Button
-                        key={cat.id}
                         variant="ghost"
                         size="sm"
-                        className={`justify-start font-medium text-sm h-9 px-3 transition-all duration-200 ${categoryParam === cat.id.toString()
+                        className={`justify-start font-medium text-sm h-9 px-3 transition-all duration-200 ${!categoryParam
                             ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
                             : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
                             }`}
-                        onClick={() => handleCategoryClick(cat.id)}
+                        onClick={() => handleCategoryClick(null)}
                     >
-                        {cat.name}
+                        All Products
                     </Button>
-                ))}
-            </div>
+                    {categories.map((cat) => (
+                        <Button
+                            key={cat.id}
+                            variant="ghost"
+                            size="sm"
+                            className={`justify-start font-medium text-sm h-9 px-3 transition-all duration-200 ${categoryParam === cat.id.toString()
+                                ? "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm"
+                                : "text-muted-foreground hover:bg-primary/10 hover:text-primary"
+                                }`}
+                            onClick={() => handleCategoryClick(cat.id)}
+                        >
+                            {cat.name}
+                        </Button>
+                    ))}
+                </div>
+            </ScrollArea>
         </div>
 
         {/* Divider */}
@@ -95,14 +110,6 @@ const SidebarFilters = ({
                     className="py-4"
                 />
             </div>
-
-            <Button
-                onClick={applyPriceFilter}
-                size="sm"
-                className="w-full h-9 font-medium"
-            >
-                Apply Price Filter
-            </Button>
         </div>
     </div>
 );
@@ -184,6 +191,12 @@ function ProductListContent() {
         router.push(`/products?${params.toString()}`);
     };
 
+    const clearFilters = () => {
+        setSearch("");
+        setPriceRange([0, 1000]);
+        router.push("/products");
+    };
+
     useEffect(() => {
         const min = searchParams.get("min_price");
         const max = searchParams.get("max_price");
@@ -237,6 +250,7 @@ function ProductListContent() {
                                 priceRange={priceRange}
                                 handlePriceChange={handlePriceChange}
                                 applyPriceFilter={applyPriceFilter}
+                                clearFilters={clearFilters}
                             />
                         </div>
                     </SheetContent>
@@ -269,6 +283,7 @@ function ProductListContent() {
                         priceRange={priceRange}
                         handlePriceChange={handlePriceChange}
                         applyPriceFilter={applyPriceFilter}
+                        clearFilters={clearFilters}
                     />
                 </aside>
 
@@ -289,10 +304,7 @@ function ProductListContent() {
                             <p className="text-lg text-muted-foreground">No products found.</p>
                             <Button
                                 variant="link"
-                                onClick={() => {
-                                    setSearch("");
-                                    handleCategoryClick(null);
-                                }}
+                                onClick={clearFilters}
                             >
                                 Clear filters
                             </Button>
